@@ -103,14 +103,14 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
     const umgewandelt = rows.map(row => ({
       user_id: user.id,
       datum: excelDateToISO(row.Datum),
-      flugzeug: row.Flugzeug,
+      flugzeug: row.Flugzeug ? String(row.Flugzeug).trim() : "",
       start: excelTimeToString(row.Start),
       landung: excelTimeToString(row.Landung),
       flugzeit: parseFloat(row.Flugzeit)
     }));
 
-    const ungültig = umgewandelt.filter(e => !e.flugzeug || e.flugzeug.trim() === "").length;
-    const gültig = umgewandelt.filter(e => e.flugzeug && e.flugzeug.trim() !== "");
+    const ungültig = umgewandelt.filter(e => !e.flugzeug).length;
+    const gültig = umgewandelt.filter(e => e.flugzeug);
 
     if (gültig.length === 0) {
       uploadStatus.textContent = "❌ Keine gültigen Zeilen zum Hochladen.";
