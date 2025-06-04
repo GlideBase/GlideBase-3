@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GlideBase</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="GlideBase Logo" class="logo" />
+    <h1>GlideBase</h1>
+    <p>Die zentrale Datenbank für Segelflugvereine</p>
+  </header>
+
+  <main class="container">
+    <section class="auth-section">
+      <div class="box">
+        <h2>Login</h2>
+        <form id="login-form">
+          <input type="email" id="login-email" placeholder="E-Mail-Adresse" required />
+          <input type="password" id="login-password" placeholder="Passwort" required />
+          <button type="submit">Einloggen</button>
+        </form>
+      </div>
+
+      <div class="box">
+        <h2>Registrieren</h2>
+        <form id="signup-form">
+          <input type="email" id="signup-email" placeholder="E-Mail-Adresse" required />
+          <input type="password" id="signup-password" placeholder="Passwort" required />
+          <button type="submit">Registrieren</button>
+        </form>
+        <p class="small-hint">Bitte bestätige deine E-Mail nach der Registrierung.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Was ist GlideBase?</h2>
+      <p>
+        GlideBase hilft Segelflugvereinen dabei, fundierte Kaufentscheidungen für neue Segelflugzeuge zu treffen – durch eine zentrale, datengetriebene Plattform mit Erfahrungswerten, Leistungsdaten und KI-gestützter Empfehlung.
+      </p>
+    </section>
+
+    <section>
+      <h2>Geplante Funktionen</h2>
+      <ul>
+        <li>Modellvergleich mit Flugzeugdaten & Betriebskosten</li>
+        <li>Vereinsbewertungen & Erfahrungsberichte</li>
+        <li>Finanzrechner für Budget & Flugstunden</li>
+        <li>KI-gestützte Flugzeugempfehlung</li>
+        <li>Live-Daten aus Segelflugvereinen</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 GlideBase – Powered by Supabase, GitHub & Vercel
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
