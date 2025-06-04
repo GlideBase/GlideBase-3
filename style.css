@@ -1,158 +1,73 @@
-/* === Grundlayout === */
 body {
+  font-family: 'Montserrat', sans-serif;
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to right, #eef2f3, #f7f8fa);
-  color: #333;
+  padding: 0;
+  background: linear-gradient(to bottom right, #e6f0ff, #ffffff);
+  color: #1e3a5f;
 }
 
-/* === Header === */
 header {
-  text-align: center;
-  background: #004085;
+  background-color: #1e3a5f;
   color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
   padding: 20px;
 }
 
-.logo-header {
-  height: 60px;
-  margin-bottom: 10px;
-}
-
-/* === Hauptbereich === */
-main {
-  padding: 30px;
-  width: 100%;
-  max-width: none;
-  margin: auto;
-  box-sizing: border-box;
-}
-
-/* === Introbereich (Login-Vorschaltseite) === */
-#intro {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.logo-large {
-  height: 100px;
-  margin-bottom: 15px;
-}
-
-#intro h2 {
-  margin-top: 10px;
-  font-size: 26px;
-  color: #004085;
-}
-
-#intro p {
-  font-size: 16px;
-  max-width: 600px;
-  margin: 0 auto;
-  color: #444;
-}
-
-/* === Authentifizierungsformulare === */
-.auth-forms {
+.auth-section {
   display: flex;
-  justify-content: center;
-  gap: 30px;
   flex-wrap: wrap;
+  gap: 20px;
 }
 
-.card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 25px;
-  margin-bottom: 30px;
-  width: 100%;
-  max-width: 400px;
-  box-sizing: border-box;
+.box {
+  flex: 1;
+  min-width: 280px;
+  background-color: #f4f8ff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(30, 58, 95, 0.1);
 }
 
-input, select {
+input[type="email"],
+input[type="password"],
+input[type="file"] {
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  border-radius: 6px;
+  padding: 12px;
+  margin: 8px 0;
   border: 1px solid #ccc;
-  font-size: 14px;
+  border-radius: 5px;
 }
 
 button {
-  background-color: #007bff;
+  width: 100%;
+  padding: 12px;
+  background-color: #1e3a5f;
   color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-.logout-btn {
-  float: right;
-  margin-bottom: 10px;
-  background-color: #dc3545;
-}
-
-.logout-btn:hover {
-  background-color: #bb2d3b;
-}
-
-/* === Upload- und Auswertungsbereich === */
-#app-section .card {
-  max-width: none;
-}
-
-/* === Diagramm-Bereich === */
-.charts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-canvas {
-  width: 100%;
-  max-width: 500px;
-  aspect-ratio: 4 / 3;
-  background: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-/* === Upload-Status === */
-#upload-status {
-  margin-top: 10px;
+  border-radius: 5px;
   font-weight: bold;
-  color: #444;
+  cursor: pointer;
 }
 
-/* === Responsive Verhalten === */
-@media (max-width: 768px) {
-  .auth-forms {
-    flex-direction: column;
-    align-items: center;
-  }
+h2 {
+  color: #1e3a5f;
+}
 
-  .logout-btn {
-    float: none;
-    display: block;
-    width: 100%;
-    margin-bottom: 20px;
-  }
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #e6f0ff;
+  font-size: 0.9em;
+  margin-top: 40px;
+}
 
-  .charts {
-    flex-direction: column;
-    align-items: center;
-  }
+.small-hint {
+  font-size: 0.9em;
+  color: #555;
 }
