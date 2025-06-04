@@ -1,52 +1,79 @@
-// === Supabase v1 Setup ===
 const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI'
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-// === LOGIN ===
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+document.getElementById("upload-btn").addEventListener("click", async () => {
+  const fileInput = document.getElementById("excel-file");
+  const status = document.getElementById("upload-status");
 
-  const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-
-  const { user, error } = await supabase.auth.signIn({ email, password });
-
-  if (error) {
-    alert("❌ Login fehlgeschlagen: " + error.message);
+  if (!fileInput.files.length) {
+    status.textContent = "❌ Bitte wähle eine Datei aus.";
     return;
   }
 
-  if (!user.confirmed_at) {
-    alert("⚠️ Deine E-Mail ist noch nicht bestätigt. Bitte überprüfe dein Postfach.");
-    await supabase.auth.signOut();
-    return;
-  }
+  const file = fileInput.files[0];
+  const reader = new FileReader();
 
-  alert("✅ Willkommen, " + user.email);
-  window.location.href = "dashboard.html";
+  reader.onload = async function (e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const json = XLSX.utils.sheet_to_json(sheet);
+
+    // Hole aktuellen User
+    const { data: session } = await supabase.auth.getSession();
+    const user_id = session?.session?.user?.id;
+    if (!user_id) {
+      status.textContent = "❌ Nicht eingeloggt.";
+      return;
+    }
+
+    // Formatieren & einfügen
+    const daten = json.map(row => ({
+      user_id,
+      datum: row.Datum,
+      flugzeug: row.Flugzeug,
+      start: row.Start,
+      landung: row.Landung,
+      flugzeit: parseFloat(row.Flugzeit)
+    }));
+
+    const { error } = await supabase.from("fluege").insert(daten);
+
+    if (error) {
+      status.textContent = "❌ Fehler beim Hochladen: " + error.message;
+    } else {
+      status.textContent = "✅ Upload erfolgreich!";
+    }
+  };
+
+  reader.readAsArrayBuffer(file);
 });
 
-// === REGISTRIERUNG ===
-document.getElementById('signup-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+// Auswertung laden
+document.getElementById("load-analysis").addEventListener("click", async () => {
+  const yearStart = `${new Date().getFullYear()}-01-01`;
 
-  const email = document.getElementById('signup-email').value;
-  const password = document.getElementById('signup-password').value;
+  // meistgeflogen
+  const { data: mostFlown } = await supabase
+    .from("fluege")
+    .select("flugzeug, count:flugzeug", { count: "exact", head: false })
+    .gte("datum", yearStart)
+    .group("flugzeug")
+    .order("count", { ascending: false })
+    .limit(1);
 
-  const { user, error } = await supabase.auth.signUp({ email, password });
+  // längste Zeit
+  const { data: mostTime } = await supabase
+    .from("fluege")
+    .select("flugzeug, sum:flugzeit", { head: false })
+    .gte("datum", yearStart)
+    .group("flugzeug")
+    .order("sum", { ascending: false })
+    .limit(1);
 
-  if (error) {
-    alert("❌ Registrierung fehlgeschlagen: " + error.message);
-    return;
-  }
-
-  alert("✅ Registrierung erfolgreich! Bitte bestätige deine E-Mail, bevor du dich einloggst.");
-
-  // Optional: Profil erstellen
-  /*
-  if (user) {
-    await supabase.from('profiles').insert([{ id: user.id, email: user.email }]);
-  }
-  */
+  document.getElementById("most-flown").textContent =
+    mostFlown?.[0]?.flugzeug || "Keine Daten";
+  document.getElementById("longest-time").textContent =
+    mostTime?.[0]?.flugzeug || "Keine Daten";
 });
