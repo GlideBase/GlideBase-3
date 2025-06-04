@@ -6,43 +6,67 @@ body {
   color: #333;
 }
 
+/* Header */
 header {
   text-align: center;
-  padding: 30px 10px 10px;
   background: #004085;
   color: white;
+  padding: 20px;
 }
 
-.logo {
-  max-height: 80px;
+.logo-header {
+  height: 60px;
   margin-bottom: 10px;
 }
 
+/* Hauptbereich */
 main {
-  padding: 20px;
-  max-width: 1000px;
+  padding: 30px;
+  max-width: 1200px;
   margin: auto;
 }
 
-.card-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+/* Introbereich auf Loginseite */
+#intro {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
-/* Karten-Design */
+.logo-large {
+  height: 100px;
+  margin-bottom: 15px;
+}
+
+#intro h2 {
+  margin-top: 10px;
+  font-size: 26px;
+  color: #004085;
+}
+
+#intro p {
+  font-size: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  color: #444;
+}
+
+/* Auth-Formulare */
+.auth-forms {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
 .card {
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 20px;
-  flex: 1;
+  padding: 25px;
   min-width: 280px;
   max-width: 400px;
 }
 
-/* Formulare & Buttons */
 input, select {
   width: 100%;
   padding: 10px;
@@ -70,9 +94,14 @@ button:hover {
 .logout-btn {
   float: right;
   margin-bottom: 10px;
+  background-color: #dc3545;
 }
 
-/* Diagramme */
+.logout-btn:hover {
+  background-color: #bb2d3b;
+}
+
+/* Diagramm-Bereich */
 .charts {
   display: flex;
   flex-wrap: wrap;
@@ -90,8 +119,15 @@ canvas {
 
 /* Responsive */
 @media (max-width: 600px) {
-  .card-container {
+  .auth-forms {
     flex-direction: column;
     align-items: center;
+  }
+
+  .logout-btn {
+    float: none;
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
   }
 }
