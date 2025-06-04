@@ -8,6 +8,14 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6/dist/umd/supabase.min.js"></script>
+  <style>
+    canvas {
+      width: 300px;
+      height: auto;
+      max-width: 100%;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
   <div id="auth-section">
@@ -41,8 +49,8 @@
     <p><strong>Meistgeflogenes Flugzeug:</strong> <span id="most-flown">–</span></p>
     <p><strong>Längste Flugzeit:</strong> <span id="longest-time">–</span></p>
 
-    <canvas id="flughaeufigkeit-chart" width="400" height="300"></canvas>
-    <canvas id="flugzeit-chart" width="400" height="300"></canvas>
+    <canvas id="flughaeufigkeit-chart" width="300" height="200"></canvas>
+    <canvas id="flugzeit-chart" width="300" height="200"></canvas>
   </div>
 
   <script src="script.js"></script>
