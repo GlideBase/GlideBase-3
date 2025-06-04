@@ -3,7 +3,6 @@
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co'
 const supabaseKey = process.env.SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
 
 // === LOGIN mit E-Mail-Bestätigung ===
 document.getElementById('login-form').addEventListener('submit', async (e) => {
