@@ -3,55 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Flugauswertung</title>
+  <title>GlideBase – Flugauswertung</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6/dist/umd/supabase.min.js"></script>
-  <style>
-    canvas {
-      width: 300px;
-      height: auto;
-      max-width: 100%;
-      margin-bottom: 20px;
-    }
-  </style>
 </head>
 <body>
-  <div id="auth-section">
-    <form id="login-form">
-      <h2>Login</h2>
-      <input type="email" id="login-email" placeholder="E-Mail" required />
-      <input type="password" id="login-password" placeholder="Passwort" required />
-      <button type="submit">Login</button>
-    </form>
+  <header>
+    <img src="LOGO_GlideBase.PNG" alt="Logo" class="logo">
+    <h1>Flugauswertung</h1>
+  </header>
 
-    <form id="signup-form">
-      <h2>Registrieren</h2>
-      <input type="email" id="signup-email" placeholder="E-Mail" required />
-      <input type="password" id="signup-password" placeholder="Passwort" required />
-      <button type="submit">Registrieren</button>
-    </form>
-  </div>
+  <main>
+    <section id="auth-section" class="card-container">
+      <form id="login-form" class="card">
+        <h2>Login</h2>
+        <input type="email" id="login-email" placeholder="E-Mail" required />
+        <input type="password" id="login-password" placeholder="Passwort" required />
+        <button type="submit">Login</button>
+      </form>
 
-  <div id="app-section" style="display:none">
-    <button id="logout-btn">Logout</button>
+      <form id="signup-form" class="card">
+        <h2>Registrieren</h2>
+        <input type="email" id="signup-email" placeholder="E-Mail" required />
+        <input type="password" id="signup-password" placeholder="Passwort" required />
+        <button type="submit">Registrieren</button>
+      </form>
+    </section>
 
-    <h2>Excel-Datei hochladen</h2>
-    <input type="file" id="excel-file" accept=".xlsx"/>
-    <button id="upload-btn">Hochladen</button>
-    <p id="upload-status"></p>
+    <section id="app-section" style="display:none">
+      <button id="logout-btn" class="logout-btn">Logout</button>
 
-    <h2>Flugauswertung</h2>
-    <label for="jahr-auswahl">Jahr:</label>
-    <select id="jahr-auswahl"></select>
+      <div class="card">
+        <h2>Excel-Datei hochladen</h2>
+        <input type="file" id="excel-file" accept=".xlsx"/>
+        <button id="upload-btn">Hochladen</button>
+        <p id="upload-status"></p>
+      </div>
 
-    <p><strong>Meistgeflogenes Flugzeug:</strong> <span id="most-flown">–</span></p>
-    <p><strong>Längste Flugzeit:</strong> <span id="longest-time">–</span></p>
+      <div class="card">
+        <h2>Flugauswertung</h2>
+        <label for="jahr-auswahl">Jahr:</label>
+        <select id="jahr-auswahl"></select>
 
-    <canvas id="flughaeufigkeit-chart" width="300" height="200"></canvas>
-    <canvas id="flugzeit-chart" width="300" height="200"></canvas>
-  </div>
+        <p><strong>Meistgeflogenes Flugzeug:</strong> <span id="most-flown">–</span></p>
+        <p><strong>Längste Flugzeit:</strong> <span id="longest-time">–</span></p>
+
+        <div class="charts">
+          <canvas id="flughaeufigkeit-chart" width="300" height="200"></canvas>
+          <canvas id="flugzeit-chart" width="300" height="200"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
