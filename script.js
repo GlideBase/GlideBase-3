@@ -1,6 +1,6 @@
 // Supabase-Konfiguration
 const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI'; // Deinen Key hier einsetzen
+const supabaseKey = '...'; // deinen anon Key einsetzen
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // UI-Elemente
@@ -41,7 +41,10 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
   const { error } = await supabase.auth.signIn({ email, password });
-  if (error) return alert("❌ " + error.message);
+  if (error) {
+    alert("❌ " + error.message);
+    return;
+  }
   checkSession();
 });
 
@@ -51,7 +54,10 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
   const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
   const { error } = await supabase.auth.signUp({ email, password });
-  if (error) return alert("❌ " + error.message);
+  if (error) {
+    alert("❌ " + error.message);
+    return;
+  }
   alert("✅ Registrierung erfolgreich. Bitte bestätige deine E-Mail.");
 });
 
@@ -74,7 +80,7 @@ function ladeJahrauswahl() {
   jahrDropdown.value = aktuellesJahr;
 }
 
-// Datum & Zeit aus Excel konvertieren
+// HELPER: Excel-Datum (Seriennummer) → ISO
 function excelDateToISO(excelValue) {
   if (typeof excelValue === 'number') {
     const date = new Date((excelValue - 25569) * 86400 * 1000);
@@ -86,6 +92,7 @@ function excelDateToISO(excelValue) {
   }
 }
 
+// HELPER: Excel-Zeit → hh:mm:ss
 function excelTimeToString(value) {
   if (typeof value === "number") {
     const seconds = Math.floor(value * 86400);
@@ -99,7 +106,27 @@ function excelTimeToString(value) {
     return null;
   }
 }
-    const umgewandelt = data.map(row => ({
+// Excel-Hochladen mit Duplikatprüfung
+document.getElementById("upload-btn").addEventListener("click", async () => {
+  const file = document.getElementById("excel-file").files[0];
+  if (!file) {
+    alert("❌ Bitte eine Datei auswählen.");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const workbook = XLSX.read(e.target.result, { type: "binary" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+
+    const user = supabase.auth.user();
+    if (!user) {
+      alert("Nicht eingeloggt.");
+      return;
+    }
+
+    const umgewandelt = rows.map(row => ({
       user_id: user.id,
       datum: excelDateToISO(row.Datum),
       flugzeug: row.Flugzeug ? String(row.Flugzeug).trim() : null,
@@ -145,6 +172,7 @@ function excelTimeToString(value) {
   reader.readAsBinaryString(file);
 });
 
+// Jahr-Auswahl aktualisiert Diagramme
 jahrDropdown.addEventListener("change", ladeUndZeigeDiagramme);
 
 // Diagramm-Logik
