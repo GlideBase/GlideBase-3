@@ -11,25 +11,33 @@
 </head>
 <body>
   <header>
-    <img src="LOGO_GlideBase.PNG" alt="Logo" class="logo">
-    <h1>Flugauswertung</h1>
+    <img src="LOGO_GlideBase.PNG" alt="Logo" class="logo-header">
+    <h1>GlideBase</h1>
   </header>
 
   <main>
-    <section id="auth-section" class="card-container">
-      <form id="login-form" class="card">
-        <h2>Login</h2>
-        <input type="email" id="login-email" placeholder="E-Mail" required />
-        <input type="password" id="login-password" placeholder="Passwort" required />
-        <button type="submit">Login</button>
-      </form>
+    <section id="auth-section">
+      <div id="intro">
+        <img src="LOGO_GlideBase.PNG" alt="GlideBase Logo Groß" class="logo-large">
+        <h2>Willkommen bei GlideBase</h2>
+        <p>Dein digitales Flugbuch für präzise Flugzeiterfassung, Auswertung und Transparenz im Flugbetrieb.</p>
+      </div>
 
-      <form id="signup-form" class="card">
-        <h2>Registrieren</h2>
-        <input type="email" id="signup-email" placeholder="E-Mail" required />
-        <input type="password" id="signup-password" placeholder="Passwort" required />
-        <button type="submit">Registrieren</button>
-      </form>
+      <div class="auth-forms">
+        <form id="login-form" class="card">
+          <h3>Login</h3>
+          <input type="email" id="login-email" placeholder="E-Mail" required />
+          <input type="password" id="login-password" placeholder="Passwort" required />
+          <button type="submit">Login</button>
+        </form>
+
+        <form id="signup-form" class="card">
+          <h3>Registrieren</h3>
+          <input type="email" id="signup-email" placeholder="E-Mail" required />
+          <input type="password" id="signup-password" placeholder="Passwort" required />
+          <button type="submit">Registrieren</button>
+        </form>
+      </div>
     </section>
 
     <section id="app-section" style="display:none">
