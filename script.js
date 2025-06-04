@@ -1,6 +1,6 @@
 // Supabase-Konfiguration
 const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI'; // dein echter Key
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // UI-Elemente
@@ -8,12 +8,11 @@ const authSection = document.getElementById("auth-section");
 const appSection = document.getElementById("app-section");
 const uploadStatus = document.getElementById("upload-status");
 
-// Session prüfen
 checkSession();
 
-async function checkSession() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) {
+function checkSession() {
+  const user = supabase.auth.user();
+  if (user) {
     showApp();
   } else {
     showLogin();
@@ -30,7 +29,7 @@ function showLogin() {
   appSection.style.display = "none";
 }
 
-// Login
+// LOGIN
 document.getElementById("login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("login-email").value;
@@ -38,10 +37,11 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
 
   const { error } = await supabase.auth.signIn({ email, password });
   if (error) return alert("❌ " + error.message);
-  showApp();
+
+  checkSession();
 });
 
-// Signup
+// SIGNUP
 document.getElementById("signup-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("signup-email").value;
@@ -49,16 +49,17 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
 
   const { error } = await supabase.auth.signUp({ email, password });
   if (error) return alert("❌ " + error.message);
-  alert("✅ Bitte bestätige deine E-Mail.");
+
+  alert("✅ Registrierung erfolgreich. Bitte bestätige deine E-Mail.");
 });
 
-// Logout
+// LOGOUT
 document.getElementById("logout-btn").addEventListener("click", async () => {
   await supabase.auth.signOut();
-  showLogin();
+  checkSession();
 });
 
-// Excel-Upload
+// EXCEL-HOCHLADEN
 document.getElementById("upload-btn").addEventListener("click", async () => {
   const file = document.getElementById("excel-file").files[0];
   if (!file) return alert("❌ Bitte eine Datei auswählen.");
@@ -69,12 +70,11 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(sheet);
 
-    const { data: session } = await supabase.auth.getSession();
-    const user_id = session?.session?.user?.id;
-    if (!user_id) return alert("Nicht eingeloggt!");
+    const user = supabase.auth.user();
+    if (!user) return alert("Nicht eingeloggt.");
 
     const daten = rows.map(row => ({
-      user_id,
+      user_id: user.id,
       datum: row.Datum,
       flugzeug: row.Flugzeug,
       start: row.Start,
@@ -89,12 +89,16 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
       uploadStatus.textContent = "✅ Upload erfolgreich!";
     }
   };
+
   reader.readAsBinaryString(file);
 });
 
-// Auswertung
+// AUSWERTUNG
 document.getElementById("load-analysis").addEventListener("click", async () => {
   const yearStart = `${new Date().getFullYear()}-01-01`;
+  const user = supabase.auth.user();
+
+  if (!user) return alert("Nicht eingeloggt.");
 
   const { data: countData } = await supabase
     .rpc('meistgeflogenes_flugzeug', { ab_datum: yearStart });
