@@ -14,6 +14,7 @@ function checkSession() {
   const user = supabase.auth.user();
   if (user) {
     showApp();
+    ladeUndZeigeDiagramme(); // ✅ automatisch laden
   } else {
     showLogin();
   }
@@ -71,7 +72,7 @@ function excelDateToISO(excelValue) {
   }
 }
 
-// HELPER: Excel-Zeit (z. B. 0.5 → 12:00:00)
+// HELPER: Excel-Zeit → hh:mm:ss
 function excelTimeToString(value) {
   if (typeof value === "number") {
     const seconds = Math.floor(value * 86400);
@@ -85,7 +86,7 @@ function excelTimeToString(value) {
     return null;
   }
 }
-// EXCEL-DATEI HOCHLADEN
+// EXCEL-HOCHLADEN
 document.getElementById("upload-btn").addEventListener("click", async () => {
   const file = document.getElementById("excel-file").files[0];
   if (!file) return alert("❌ Bitte eine Datei auswählen.");
@@ -116,16 +117,35 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
       return;
     }
 
-    const { error } = await supabase.from("fluege").insert(gültig);
+    const { data: vorhandene } = await supabase
+      .from("fluege")
+      .select("datum, flugzeug, start")
+      .eq("user_id", user.id);
+
+    const filtered = gültig.filter(e =>
+      !vorhandene.some(v =>
+        v.datum === e.datum &&
+        v.flugzeug === e.flugzeug &&
+        v.start === e.start
+      )
+    );
+
+    if (filtered.length === 0) {
+      uploadStatus.textContent = "⚠️ Alle Zeilen sind bereits vorhanden (Duplikate).";
+      return;
+    }
+
+    const { error } = await supabase.from("fluege").insert(filtered);
 
     if (error) {
       uploadStatus.textContent = "❌ Fehler: " + error.message;
     } else {
-      let msg = `✅ ${gültig.length} Einträge erfolgreich hochgeladen.`;
+      let msg = `✅ ${filtered.length} Einträge erfolgreich hochgeladen.`;
       if (ungültig > 0) {
         msg += ` ⚠️ ${ungültig} Zeile(n) wurden übersprungen (fehlender Flugzeug-Wert).`;
       }
       uploadStatus.textContent = msg;
+      ladeUndZeigeDiagramme(); // Diagramm nach Upload aktualisieren
     }
   };
 
@@ -133,36 +153,40 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
 });
 
 // AUSWERTUNG & DIAGRAMME
-document.getElementById("load-analysis").addEventListener("click", async () => {
-  const yearStart = `${new Date().getFullYear()}-01-01`;
-  const user = supabase.auth.user();
-  if (!user) return alert("Nicht eingeloggt.");
-
-  const { data: countData } = await supabase.rpc('meistgeflogenes_flugzeug', { ab_datum: yearStart });
-  const { data: zeitData } = await supabase.rpc('flugzeug_mit_gesamtzeit', { ab_datum: yearStart });
-
-  document.getElementById("most-flown").textContent = countData?.[0]?.flugzeug || "Keine Daten";
-  document.getElementById("longest-time").textContent = zeitData?.[0]?.flugzeug || "Keine Daten";
-
-  await ladeUndZeigeDiagramme();
-});
-
 async function ladeUndZeigeDiagramme() {
   const yearStart = `${new Date().getFullYear()}-01-01`;
   const user = supabase.auth.user();
   if (!user) return;
 
-  const { data: haeufigkeitData } = await supabase
+  const { data: fluege, error } = await supabase
     .from("fluege")
-    .select("flugzeug, count:flugzeug", { count: "exact", head: false })
+    .select("flugzeug, flugzeit, datum")
     .gte("datum", yearStart)
-    .group("flugzeug");
+    .eq("user_id", user.id);
 
-  const { data: zeitData } = await supabase
-    .from("fluege")
-    .select("flugzeug, sum:flugzeit", { head: false })
-    .gte("datum", yearStart)
-    .group("flugzeug");
+  if (error || !fluege) {
+    alert("Fehler beim Laden der Flugdaten.");
+    return;
+  }
+
+  // Gruppieren
+  const countMap = {};
+  const sumMap = {};
+
+  fluege.forEach(f => {
+    if (!f.flugzeug) return;
+    countMap[f.flugzeug] = (countMap[f.flugzeug] || 0) + 1;
+    sumMap[f.flugzeug] = (sumMap[f.flugzeug] || 0) + (f.flugzeit || 0);
+  });
+
+  const meist = Object.entries(countMap).sort((a, b) => b[1] - a[1])[0];
+  const langst = Object.entries(sumMap).sort((a, b) => b[1] - a[1])[0];
+
+  document.getElementById("most-flown").textContent = meist ? `${meist[0]} (${meist[1]} Flüge)` : "Keine Daten";
+  document.getElementById("longest-time").textContent = langst ? `${langst[0]} (${langst[1].toFixed(2)} h)` : "Keine Daten";
+
+  const haeufigkeitData = Object.entries(countMap).map(([flugzeug, count]) => ({ flugzeug, count }));
+  const zeitData = Object.entries(sumMap).map(([flugzeug, sum]) => ({ flugzeug, sum }));
 
   zeigePieChart(haeufigkeitData);
   zeigeBarChart(zeitData);
