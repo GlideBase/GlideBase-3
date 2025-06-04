@@ -1,21 +1,11 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GlideBase – Flugzeiten Auswertung</title>
-
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- 📊 Chart.js -->
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- 🔄 Supabase JS v1 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6/dist/umd/supabase.min.js"></script>
-
-  <!-- 📄 SheetJS (Excel) -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
   <header>
@@ -24,14 +14,14 @@
   </header>
 
   <main>
-    <!-- Intro -->
+    <!-- Intro-Bereich -->
     <section id="intro">
       <img src="LOGO_GlideBase.PNG" alt="GlideBase Logo Groß" class="logo-large">
       <h2>Willkommen bei GlideBase</h2>
       <p>Dein digitales Flugbuch für präzise Flugzeiterfassung, Auswertung und Transparenz im Flugbetrieb.</p>
     </section>
 
-    <!-- Auth -->
+    <!-- Auth-Bereich -->
     <section id="auth-section" class="auth-forms">
       <form id="login-form" class="card">
         <h3>Login</h3>
@@ -48,14 +38,13 @@
       </form>
     </section>
 
-    <!-- App -->
+    <!-- App-Bereich -->
     <section id="app-section" style="display: none;">
       <button class="logout-btn" id="logout-btn">Abmelden</button>
 
       <div class="card">
         <h3>Flugzeiten hochladen (.xlsx)</h3>
-        <input type="file" id="excel-file" accept=".xlsx" />
-        <button id="upload-btn">Hochladen</button>
+        <input type="file" id="excel-upload" accept=".xlsx" />
         <p id="upload-status"></p>
       </div>
 
@@ -69,13 +58,12 @@
       </div>
 
       <div class="card charts">
-        <canvas id="flughaeufigkeit-chart"></canvas>
-        <canvas id="flugzeit-chart"></canvas>
+        <canvas id="flughaeufigkeit-chart" width="500" height="375"></canvas>
+        <canvas id="flugzeit-chart" width="500" height="375"></canvas>
       </div>
     </section>
   </main>
 
-  <!-- 🚀 Hauptscript am Ende laden -->
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
