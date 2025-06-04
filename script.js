@@ -71,6 +71,21 @@ function excelDateToISO(excelValue) {
   }
 }
 
+// HELPER: Excel-Zeit umwandeln (z.B. 0.5 → 12:00:00)
+function excelTimeToString(value) {
+  if (typeof value === "number") {
+    const seconds = Math.floor(value * 86400);
+    const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  } else if (typeof value === "string") {
+    return value;
+  } else {
+    return null;
+  }
+}
+
 // EXCEL-UPLOAD
 document.getElementById("upload-btn").addEventListener("click", async () => {
   const file = document.getElementById("excel-file").files[0];
@@ -89,8 +104,8 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
       user_id: user.id,
       datum: excelDateToISO(row.Datum),
       flugzeug: row.Flugzeug,
-      start: row.Start,
-      landung: row.Landung,
+      start: excelTimeToString(row.Start),
+      landung: excelTimeToString(row.Landung),
       flugzeit: parseFloat(row.Flugzeit)
     }));
 
@@ -105,7 +120,7 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
   reader.readAsBinaryString(file);
 });
 
-// AUSWERTUNG (aktives Jahr)
+// AUSWERTUNG (aktuelles Jahr)
 document.getElementById("load-analysis").addEventListener("click", async () => {
   const yearStart = `${new Date().getFullYear()}-01-01`;
   const user = supabase.auth.user();
