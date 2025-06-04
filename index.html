@@ -3,29 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GlideBase – Flugupload</title>
+  <title>GlideBase</title>
+
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  
+  <!-- Excel Reader -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6"></script>
 </head>
 <body>
   <header>
-    <h1>Flugdaten hochladen</h1>
-    <p>Lade deine Excel-Datei hoch (.xlsx) mit Spalten: Datum, Flugzeug, Start, Landung, Flugzeit</p>
+    <h1>GlideBase</h1>
+    <p>Die zentrale Plattform für Flugdaten</p>
   </header>
 
   <main class="container">
-    <input type="file" id="excel-file" accept=".xlsx" />
-    <button id="upload-btn">Upload starten</button>
-    <div id="upload-status"></div>
+    <!-- Auth-Section -->
+    <section id="auth-section">
+      <div class="box">
+        <h2>Login</h2>
+        <form id="login-form">
+          <input type="email" id="login-email" placeholder="E-Mail-Adresse" required />
+          <input type="password" id="login-password" placeholder="Passwort" required />
+          <button type="submit">Einloggen</button>
+        </form>
+      </div>
 
-    <section class="auswertung">
-      <h2>Auswertung</h2>
+      <div class="box">
+        <h2>Registrieren</h2>
+        <form id="signup-form">
+          <input type="email" id="signup-email" placeholder="E-Mail-Adresse" required />
+          <input type="password" id="signup-password" placeholder="Passwort" required />
+          <button type="submit">Registrieren</button>
+        </form>
+        <p class="small-hint">Bitte bestätige deine E-Mail nach der Registrierung.</p>
+      </div>
+    </section>
+
+    <!-- App-Section -->
+    <section id="app-section" style="display: none">
+      <button id="logout-btn">Abmelden</button>
+
+      <h2>Excel-Datei hochladen (.xlsx)</h2>
+      <input type="file" id="excel-file" accept=".xlsx" />
+      <button id="upload-btn">Upload starten</button>
+      <div id="upload-status"></div>
+
+      <h2>Auswertung (dieses Jahr)</h2>
       <button id="load-analysis">Aktualisieren</button>
       <p><strong>Meistgeflogenes Flugzeug:</strong> <span id="most-flown"></span></p>
       <p><strong>Längste Flugzeit:</strong> <span id="longest-time"></span></p>
     </section>
   </main>
+
+  <footer>
+    &copy; 2025 GlideBase – Eine Datei, viele Funktionen ✈️
+  </footer>
 
   <script src="script.js"></script>
 </body>
