@@ -2,21 +2,22 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 20px;
-  background: #f4f4f4;
-  color: #333;
+  background: #002244; /* Dunkelblau */
+  color: #f0f0f0;
 }
 
 h2 {
-  color: #004085;
+  color: #ffffff;
 }
 
 form {
   margin-bottom: 20px;
   padding: 20px;
-  background: white;
-  border: 1px solid #ccc;
+  background: #ffffff10; /* leicht transparentes Weiß */
+  border: 1px solid #ffffff33;
   border-radius: 8px;
   max-width: 400px;
+  backdrop-filter: blur(4px);
 }
 
 input[type="email"],
@@ -28,8 +29,10 @@ select {
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 15px;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 4px;
+  background: #ffffffdd;
+  color: #000;
   box-sizing: border-box;
 }
 
@@ -40,6 +43,7 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 button:hover {
@@ -55,17 +59,19 @@ button:hover {
 }
 
 #app-section {
-  background: white;
+  background: #ffffff08;
   padding: 20px;
   border-radius: 8px;
-  border: 1px solid #ccc;
-  max-width: 800px;
+  border: 1px solid #ffffff22;
+  max-width: 900px;
   margin: 0 auto;
+  backdrop-filter: blur(2px);
 }
 
 #upload-status {
   margin-top: 10px;
   font-weight: bold;
+  color: #ffcc00;
 }
 
 canvas {
@@ -74,4 +80,7 @@ canvas {
   max-width: 100%;
   width: 300px;
   height: auto;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px;
 }
