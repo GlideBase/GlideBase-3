@@ -1,12 +1,16 @@
 // Supabase-Konfiguration
 const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI'; // DEIN echter anon-Key
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI'; // ← deinen anon Key einsetzen
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // UI-Elemente
 const authSection = document.getElementById("auth-section");
 const appSection = document.getElementById("app-section");
 const uploadStatus = document.getElementById("upload-status");
+const jahrDropdown = document.getElementById("jahr-auswahl");
+
+let flughaeufigkeitChart = null;
+let flugzeitChart = null;
 
 checkSession();
 
@@ -14,7 +18,8 @@ function checkSession() {
   const user = supabase.auth.user();
   if (user) {
     showApp();
-    ladeUndZeigeDiagramme(); // ✅ automatisch laden
+    ladeJahrauswahl();
+    ladeUndZeigeDiagramme();
   } else {
     showLogin();
   }
@@ -60,6 +65,19 @@ document.getElementById("logout-btn").addEventListener("click", async () => {
   checkSession();
 });
 
+// Jahr-Auswahl Dropdown füllen
+function ladeJahrauswahl() {
+  const aktuellesJahr = new Date().getFullYear();
+  jahrDropdown.innerHTML = "";
+  for (let y = aktuellesJahr; y >= 2020; y--) {
+    const opt = document.createElement("option");
+    opt.value = y;
+    opt.textContent = y;
+    jahrDropdown.appendChild(opt);
+  }
+  jahrDropdown.value = aktuellesJahr;
+}
+
 // HELPER: Excel-Datum (Seriennummer) → ISO
 function excelDateToISO(excelValue) {
   if (typeof excelValue === 'number') {
@@ -86,7 +104,7 @@ function excelTimeToString(value) {
     return null;
   }
 }
-// EXCEL-HOCHLADEN
+// Excel-Hochladen mit Duplikatprüfung
 document.getElementById("upload-btn").addEventListener("click", async () => {
   const file = document.getElementById("excel-file").files[0];
   if (!file) return alert("❌ Bitte eine Datei auswählen.");
@@ -103,7 +121,7 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
     const umgewandelt = rows.map(row => ({
       user_id: user.id,
       datum: excelDateToISO(row.Datum),
-      flugzeug: row.Flugzeug ? String(row.Flugzeug).trim() : "",
+      flugzeug: row.Flugzeug ? String(row.Flugzeug).trim() : null,
       start: excelTimeToString(row.Start),
       landung: excelTimeToString(row.Landung),
       flugzeit: parseFloat(row.Flugzeit)
@@ -111,11 +129,6 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
 
     const ungültig = umgewandelt.filter(e => !e.flugzeug).length;
     const gültig = umgewandelt.filter(e => e.flugzeug);
-
-    if (gültig.length === 0) {
-      uploadStatus.textContent = "❌ Keine gültigen Zeilen zum Hochladen.";
-      return;
-    }
 
     const { data: vorhandene } = await supabase
       .from("fluege")
@@ -142,34 +155,38 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
     } else {
       let msg = `✅ ${filtered.length} Einträge erfolgreich hochgeladen.`;
       if (ungültig > 0) {
-        msg += ` ⚠️ ${ungültig} Zeile(n) wurden übersprungen (fehlender Flugzeug-Wert).`;
+        msg += ` ⚠️ ${ungültig} ungültige Zeile(n) übersprungen.`;
       }
       uploadStatus.textContent = msg;
-      ladeUndZeigeDiagramme(); // Diagramm nach Upload aktualisieren
+      ladeUndZeigeDiagramme();
     }
   };
-
   reader.readAsBinaryString(file);
 });
 
-// AUSWERTUNG & DIAGRAMME
+// Jahr-Auswahl aktualisiert Diagramme
+jahrDropdown.addEventListener("change", ladeUndZeigeDiagramme);
+
+// Diagramm-Logik
 async function ladeUndZeigeDiagramme() {
-  const yearStart = `${new Date().getFullYear()}-01-01`;
   const user = supabase.auth.user();
-  if (!user) return;
+  const jahr = jahrDropdown.value;
+  const yearStart = `${jahr}-01-01`;
+  const yearEnd = `${jahr}-12-31`;
 
   const { data: fluege, error } = await supabase
     .from("fluege")
     .select("flugzeug, flugzeit, datum")
     .gte("datum", yearStart)
+    .lte("datum", yearEnd)
     .eq("user_id", user.id);
 
-  if (error || !fluege) {
-    alert("Fehler beim Laden der Flugdaten.");
+  if (error || !fluege || fluege.length === 0) {
+    document.getElementById("most-flown").textContent = "Keine Daten";
+    document.getElementById("longest-time").textContent = "Keine Daten";
     return;
   }
 
-  // Gruppieren
   const countMap = {};
   const sumMap = {};
 
@@ -194,7 +211,9 @@ async function ladeUndZeigeDiagramme() {
 
 function zeigePieChart(data) {
   const ctx = document.getElementById("flughaeufigkeit-chart").getContext("2d");
-  new Chart(ctx, {
+  if (flughaeufigkeitChart) flughaeufigkeitChart.destroy();
+
+  flughaeufigkeitChart = new Chart(ctx, {
     type: "pie",
     data: {
       labels: data.map(e => e.flugzeug),
@@ -215,7 +234,9 @@ function zeigePieChart(data) {
 
 function zeigeBarChart(data) {
   const ctx = document.getElementById("flugzeit-chart").getContext("2d");
-  new Chart(ctx, {
+  if (flugzeitChart) flugzeitChart.destroy();
+
+  flugzeitChart = new Chart(ctx, {
     type: "bar",
     data: {
       labels: data.map(e => e.flugzeug),
