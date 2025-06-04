@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GlideBase – Flugzeiten Auswertung</title>
-  <link rel="stylesheet" href="style.css">
+
+  <!-- Style -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Supabase JS v1 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6/dist/umd/supabase.min.js"></script>
 </head>
 <body>
   <header>
@@ -44,7 +51,8 @@
 
       <div class="card">
         <h3>Flugzeiten hochladen (.xlsx)</h3>
-        <input type="file" id="excel-upload" accept=".xlsx" />
+        <input type="file" id="excel-file" accept=".xlsx" />
+        <button id="upload-btn">Hochladen</button>
         <p id="upload-status"></p>
       </div>
 
@@ -64,6 +72,7 @@
     </section>
   </main>
 
-  <script type="module" src="script.js"></script>
+  <!-- Haupt-Script -->
+  <script src="script.js"></script>
 </body>
 </html>
