@@ -71,7 +71,7 @@ function excelDateToISO(excelValue) {
   }
 }
 
-// HELPER: Excel-Zeit umwandeln (z.B. 0.5 → 12:00:00)
+// HELPER: Excel-Zeit umwandeln (z. B. 0.5 → 12:00:00)
 function excelTimeToString(value) {
   if (typeof value === "number") {
     const seconds = Math.floor(value * 86400);
@@ -86,7 +86,7 @@ function excelTimeToString(value) {
   }
 }
 
-// EXCEL-UPLOAD
+// EXCEL-UPLOAD mit Filter & Feedback
 document.getElementById("upload-btn").addEventListener("click", async () => {
   const file = document.getElementById("excel-file").files[0];
   if (!file) return alert("❌ Bitte eine Datei auswählen.");
@@ -100,7 +100,7 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
     const user = supabase.auth.user();
     if (!user) return alert("Nicht eingeloggt.");
 
-    const daten = rows.map(row => ({
+    const umgewandelt = rows.map(row => ({
       user_id: user.id,
       datum: excelDateToISO(row.Datum),
       flugzeug: row.Flugzeug,
@@ -109,22 +109,34 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
       flugzeit: parseFloat(row.Flugzeit)
     }));
 
-    const { error } = await supabase.from("fluege").insert(daten);
+    const ungültig = umgewandelt.filter(e => !e.flugzeug || e.flugzeug.trim() === "").length;
+    const gültig = umgewandelt.filter(e => e.flugzeug && e.flugzeug.trim() !== "");
+
+    if (gültig.length === 0) {
+      uploadStatus.textContent = "❌ Keine gültigen Zeilen zum Hochladen.";
+      return;
+    }
+
+    const { error } = await supabase.from("fluege").insert(gültig);
+
     if (error) {
       uploadStatus.textContent = "❌ Fehler: " + error.message;
     } else {
-      uploadStatus.textContent = "✅ Upload erfolgreich!";
+      let msg = `✅ ${gültig.length} Einträge erfolgreich hochgeladen.`;
+      if (ungültig > 0) {
+        msg += ` ⚠️ ${ungültig} Zeile(n) wurden übersprungen (fehlender Flugzeug-Wert).`;
+      }
+      uploadStatus.textContent = msg;
     }
   };
 
   reader.readAsBinaryString(file);
 });
 
-// AUSWERTUNG (aktuelles Jahr)
+// AUSWERTUNG
 document.getElementById("load-analysis").addEventListener("click", async () => {
   const yearStart = `${new Date().getFullYear()}-01-01`;
   const user = supabase.auth.user();
-
   if (!user) return alert("Nicht eingeloggt.");
 
   const { data: countData } = await supabase
