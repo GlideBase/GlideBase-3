@@ -1,6 +1,6 @@
 // Supabase-Konfiguration
 const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI'; // DEIN echter anon-Key
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // UI-Elemente
@@ -59,7 +59,19 @@ document.getElementById("logout-btn").addEventListener("click", async () => {
   checkSession();
 });
 
-// EXCEL-HOCHLADEN
+// HELPER: Excel-Datum umwandeln (Seriennummer → YYYY-MM-DD)
+function excelDateToISO(excelValue) {
+  if (typeof excelValue === 'number') {
+    const date = new Date((excelValue - 25569) * 86400 * 1000);
+    return date.toISOString().split('T')[0];
+  } else if (typeof excelValue === 'string') {
+    return excelValue;
+  } else {
+    return null;
+  }
+}
+
+// EXCEL-UPLOAD
 document.getElementById("upload-btn").addEventListener("click", async () => {
   const file = document.getElementById("excel-file").files[0];
   if (!file) return alert("❌ Bitte eine Datei auswählen.");
@@ -75,7 +87,7 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
 
     const daten = rows.map(row => ({
       user_id: user.id,
-      datum: row.Datum,
+      datum: excelDateToISO(row.Datum),
       flugzeug: row.Flugzeug,
       start: row.Start,
       landung: row.Landung,
@@ -93,7 +105,7 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
   reader.readAsBinaryString(file);
 });
 
-// AUSWERTUNG
+// AUSWERTUNG (aktives Jahr)
 document.getElementById("load-analysis").addEventListener("click", async () => {
   const yearStart = `${new Date().getFullYear()}-01-01`;
   const user = supabase.auth.user();
