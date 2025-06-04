@@ -1,157 +1,138 @@
-/* === Grundlayout === */
+/* Grundlayout */
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to right, #eef2f3, #f7f8fa);
-  color: #333;
+  font-family: Arial, sans-serif;
+  background-color: #0b1e3b; /* Dunkelblauer Hintergrund */
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-/* === Header === */
 header {
-  text-align: center;
-  background: #004085;
-  color: white;
-  padding: 20px;
+  background-color: #102c57;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #fff;
+  border-bottom: 2px solid #1e3a70;
 }
 
 .logo-header {
-  height: 60px;
-  margin-bottom: 10px;
+  height: 40px;
 }
 
-/* === Hauptbereich === */
 main {
-  padding: 30px;
-  width: 100%;
-  max-width: none;
+  flex: 1;
+  padding: 2rem;
+  max-width: 1000px;
   margin: auto;
-  box-sizing: border-box;
 }
 
-/* === Introbereich (Login-Vorschaltseite) === */
+/* Intro */
 #intro {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 2rem;
 }
 
 .logo-large {
-  height: 100px;
-  margin-bottom: 15px;
+  max-width: 150px;
+  margin-bottom: 1rem;
 }
 
-#intro h2 {
-  margin-top: 10px;
-  font-size: 26px;
-  color: #004085;
-}
-
-#intro p {
-  font-size: 16px;
-  max-width: 600px;
-  margin: 0 auto;
-  color: #444;
-}
-
-/* === Authentifizierungsformulare === */
+/* Auth-Formulare */
 .auth-forms {
   display: flex;
-  justify-content: center;
-  gap: 30px;
   flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 2rem;
 }
 
 .card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 25px;
-  margin-bottom: 30px;
+  background-color: #17315c;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
   width: 100%;
   max-width: 400px;
-  box-sizing: border-box;
 }
 
-input, select {
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #ffda6a;
+}
+
+.card input, .card select, .card button {
+  display: block;
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  margin-bottom: 15px;
+  padding: 0.6rem;
+  margin: 0.5rem 0;
+  font-size: 1rem;
   border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease;
 }
 
-button:hover {
-  background-color: #0056b3;
+.card input, .card select {
+  background-color: #fff;
+  color: #000;
+}
+
+.card button {
+  background-color: #ffda6a;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.card button:hover {
+  background-color: #ffd045;
 }
 
 .logout-btn {
-  float: right;
-  margin-bottom: 10px;
   background-color: #dc3545;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
 .logout-btn:hover {
-  background-color: #bb2d3b;
+  background-color: #c82333;
 }
 
-/* === Upload- und Auswertungsbereich === */
-#app-section .card {
-  max-width: none;
-}
-
-/* === Diagramm-Bereich === */
+/* Diagramme */
 .charts {
   display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  justify-content: center;
-  margin-top: 20px;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
 canvas {
+  max-width: 600px;
   width: 100%;
-  max-width: 500px;
-  aspect-ratio: 4 / 3;
-  background: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  height: auto !important;
+  margin: 0 auto;
+  display: block;
 }
 
-/* === Upload-Status === */
+/* Upload-Status */
 #upload-status {
-  margin-top: 10px;
-  font-weight: bold;
-  color: #444;
+  margin-top: 0.5rem;
+  font-style: italic;
 }
 
-/* === Responsive Verhalten === */
+/* Responsive */
 @media (max-width: 768px) {
   .auth-forms {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .logout-btn {
-    float: none;
-    display: block;
-    width: 100%;
-    margin-bottom: 20px;
-  }
-
-  .charts {
     flex-direction: column;
     align-items: center;
   }
