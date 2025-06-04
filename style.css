@@ -117,11 +117,12 @@ main {
 }
 
 canvas {
-  max-width: 600px;
   width: 100%;
+  max-width: 500px;
+  aspect-ratio: 4 / 3;
   height: auto !important;
-  margin: 0 auto;
   display: block;
+  margin: 0 auto;
 }
 
 /* Upload-Status */
