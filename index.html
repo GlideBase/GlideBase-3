@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GlideBase</title>
+
+  <!-- Styles & Fonts -->
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- Supabase JS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -18,7 +21,7 @@
 
   <main class="container">
     <section class="auth-section">
-      <!-- Login-Formular -->
+      <!-- Login -->
       <div class="box">
         <h2>Login</h2>
         <form id="login-form">
@@ -28,6 +31,7 @@
         </form>
       </div>
 
+      <!-- Registrierung -->
       <div class="box">
         <h2>Registrieren</h2>
         <form id="signup-form">
@@ -62,6 +66,10 @@
     &copy; 2025 GlideBase – Powered by Supabase, GitHub & Vercel
   </footer>
 
+  <!-- Dein eigenes Script mit Supabase-Login/Signup -->
   <script src="script.js"></script>
 </body>
 </html>
+
+
+
