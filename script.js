@@ -1,10 +1,11 @@
-// === Supabase-Konfiguration ===
+// === Supabase v2 Setup ===
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.5/+esm';
 
 const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI'
-const supabase = window.createClient(supabaseUrl, supabaseKey) 
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-// === LOGIN mit E-Mail-Bestätigung ===
+// === LOGIN ===
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -12,10 +13,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   const password = document.getElementById('login-password').value;
 
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       alert("❌ Login fehlgeschlagen: " + error.message);
@@ -26,7 +24,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
     if (!user.email_confirmed_at) {
       alert("⚠️ Deine E-Mail ist noch nicht bestätigt. Bitte überprüfe dein Postfach.");
-      await supabase.auth.signOut(); // Sicherheitshalber ausloggen
+      await supabase.auth.signOut();
       return;
     }
 
@@ -39,7 +37,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   }
 });
 
-// === REGISTRIERUNG mit Hinweis zur Bestätigung ===
+// === REGISTRIERUNG ===
 document.getElementById('signup-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -47,10 +45,7 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
   const password = document.getElementById('signup-password').value;
 
   try {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password
-    });
+    const { data, error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
       alert("❌ Registrierung fehlgeschlagen: " + error.message);
@@ -58,8 +53,8 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
     }
 
     alert("✅ Registrierung erfolgreich! Bitte bestätige deine E-Mail, bevor du dich einloggst.");
-    
-    // Optional: automatisch Profil anlegen, falls Trigger NICHT aktiv ist
+
+    // Optional: automatisch Profil anlegen (nur wenn du 'profiles'-Tabelle verwendest)
     /*
     const user = data.user;
     if (user) {
