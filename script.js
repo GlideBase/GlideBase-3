@@ -1,6 +1,6 @@
 // Supabase-Konfiguration
 const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI'; // ← deinen anon Key einsetzen
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI'; // Deinen Key hier einsetzen
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // UI-Elemente
@@ -40,10 +40,8 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
-
   const { error } = await supabase.auth.signIn({ email, password });
   if (error) return alert("❌ " + error.message);
-
   checkSession();
 });
 
@@ -52,10 +50,8 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
-
   const { error } = await supabase.auth.signUp({ email, password });
   if (error) return alert("❌ " + error.message);
-
   alert("✅ Registrierung erfolgreich. Bitte bestätige deine E-Mail.");
 });
 
@@ -78,7 +74,7 @@ function ladeJahrauswahl() {
   jahrDropdown.value = aktuellesJahr;
 }
 
-// HELPER: Excel-Datum (Seriennummer) → ISO
+// Datum & Zeit aus Excel konvertieren
 function excelDateToISO(excelValue) {
   if (typeof excelValue === 'number') {
     const date = new Date((excelValue - 25569) * 86400 * 1000);
@@ -90,7 +86,6 @@ function excelDateToISO(excelValue) {
   }
 }
 
-// HELPER: Excel-Zeit → hh:mm:ss
 function excelTimeToString(value) {
   if (typeof value === "number") {
     const seconds = Math.floor(value * 86400);
@@ -104,21 +99,7 @@ function excelTimeToString(value) {
     return null;
   }
 }
-// Excel-Hochladen mit Duplikatprüfung
-document.getElementById("upload-btn").addEventListener("click", async () => {
-  const file = document.getElementById("excel-file").files[0];
-  if (!file) return alert("❌ Bitte eine Datei auswählen.");
-
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const workbook = XLSX.read(e.target.result, { type: "binary" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet);
-
-    const user = supabase.auth.user();
-    if (!user) return alert("Nicht eingeloggt.");
-
-    const umgewandelt = rows.map(row => ({
+    const umgewandelt = data.map(row => ({
       user_id: user.id,
       datum: excelDateToISO(row.Datum),
       flugzeug: row.Flugzeug ? String(row.Flugzeug).trim() : null,
@@ -164,7 +145,6 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
   reader.readAsBinaryString(file);
 });
 
-// Jahr-Auswahl aktualisiert Diagramme
 jahrDropdown.addEventListener("change", ladeUndZeigeDiagramme);
 
 // Diagramm-Logik
@@ -220,11 +200,12 @@ function zeigePieChart(data) {
       datasets: [{
         label: "Anzahl Flüge",
         data: data.map(e => e.count),
-        borderWidth: 1
+        backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1']
       }]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: true,
       plugins: {
         title: { display: true, text: "Flüge je Flugzeug (Anzahl)" }
       }
@@ -243,11 +224,12 @@ function zeigeBarChart(data) {
       datasets: [{
         label: "Gesamtflugzeit (h)",
         data: data.map(e => e.sum),
-        borderWidth: 1
+        backgroundColor: '#007bff'
       }]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: true,
       plugins: {
         title: { display: true, text: "Flugzeit je Flugzeug (Summe)" }
       },
