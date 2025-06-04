@@ -71,7 +71,7 @@ function excelDateToISO(excelValue) {
   }
 }
 
-// HELPER: Excel-Zeit (z. B. 0.5 → 12:00:00)
+// HELPER: Excel-Zeit → hh:mm:ss
 function excelTimeToString(value) {
   if (typeof value === "number") {
     const seconds = Math.floor(value * 86400);
@@ -85,7 +85,7 @@ function excelTimeToString(value) {
     return null;
   }
 }
-// EXCEL-DATEI HOCHLADEN
+// EXCEL-HOCHLADEN
 document.getElementById("upload-btn").addEventListener("click", async () => {
   const file = document.getElementById("excel-file").files[0];
   if (!file) return alert("❌ Bitte eine Datei auswählen.");
@@ -138,35 +138,37 @@ document.getElementById("load-analysis").addEventListener("click", async () => {
   const user = supabase.auth.user();
   if (!user) return alert("Nicht eingeloggt.");
 
-  const { data: countData } = await supabase.rpc('meistgeflogenes_flugzeug', { ab_datum: yearStart });
-  const { data: zeitData } = await supabase.rpc('flugzeug_mit_gesamtzeit', { ab_datum: yearStart });
-
-  document.getElementById("most-flown").textContent = countData?.[0]?.flugzeug || "Keine Daten";
-  document.getElementById("longest-time").textContent = zeitData?.[0]?.flugzeug || "Keine Daten";
-
-  await ladeUndZeigeDiagramme();
-});
-
-async function ladeUndZeigeDiagramme() {
-  const yearStart = `${new Date().getFullYear()}-01-01`;
-  const user = supabase.auth.user();
-  if (!user) return;
-
-  const { data: haeufigkeitData } = await supabase
+  const { data: fluege, error } = await supabase
     .from("fluege")
-    .select("flugzeug, count:flugzeug", { count: "exact", head: false })
-    .gte("datum", yearStart)
-    .group("flugzeug");
+    .select("flugzeug, flugzeit")
+    .gte("datum", yearStart);
 
-  const { data: zeitData } = await supabase
-    .from("fluege")
-    .select("flugzeug, sum:flugzeit", { head: false })
-    .gte("datum", yearStart)
-    .group("flugzeug");
+  if (error || !fluege) return alert("Fehler beim Laden der Daten.");
+
+  // Gruppierung für Analyse
+  const countMap = {};
+  const sumMap = {};
+
+  fluege.forEach(f => {
+    if (!f.flugzeug) return;
+    countMap[f.flugzeug] = (countMap[f.flugzeug] || 0) + 1;
+    sumMap[f.flugzeug] = (sumMap[f.flugzeug] || 0) + (f.flugzeit || 0);
+  });
+
+  // Meistgeflogen
+  const meist = Object.entries(countMap).sort((a, b) => b[1] - a[1])[0];
+  const langst = Object.entries(sumMap).sort((a, b) => b[1] - a[1])[0];
+
+  document.getElementById("most-flown").textContent = meist ? `${meist[0]} (${meist[1]})` : "Keine Daten";
+  document.getElementById("longest-time").textContent = langst ? `${langst[0]} (${langst[1].toFixed(2)} h)` : "Keine Daten";
+
+  // Daten aufbereiten für Charts
+  const haeufigkeitData = Object.entries(countMap).map(([k, v]) => ({ flugzeug: k, count: v }));
+  const zeitData = Object.entries(sumMap).map(([k, v]) => ({ flugzeug: k, sum: v }));
 
   zeigePieChart(haeufigkeitData);
   zeigeBarChart(zeitData);
-}
+});
 
 function zeigePieChart(data) {
   const ctx = document.getElementById("flughaeufigkeit-chart").getContext("2d");
