@@ -8,9 +8,8 @@
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
   
-  <!-- Excel Reader -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6"></script>
 </head>
 <body>
@@ -20,7 +19,6 @@
   </header>
 
   <main class="container">
-    <!-- Auth-Section -->
     <section id="auth-section">
       <div class="box">
         <h2>Login</h2>
@@ -42,7 +40,6 @@
       </div>
     </section>
 
-    <!-- App-Section -->
     <section id="app-section" style="display: none">
       <button id="logout-btn">Abmelden</button>
 
@@ -55,11 +52,15 @@
       <button id="load-analysis">Aktualisieren</button>
       <p><strong>Meistgeflogenes Flugzeug:</strong> <span id="most-flown"></span></p>
       <p><strong>Längste Flugzeit:</strong> <span id="longest-time"></span></p>
+
+      <h2>Diagramme</h2>
+      <canvas id="flughaeufigkeit-chart" width="400" height="200"></canvas>
+      <canvas id="flugzeit-chart" width="400" height="200"></canvas>
     </section>
   </main>
 
   <footer>
-    &copy; 2025 GlideBase – Eine Datei, viele Funktionen ✈️
+    &copy; 2025 GlideBase – Alles in einer Datei 💡
   </footer>
 
   <script src="script.js"></script>
