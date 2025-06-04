@@ -1,4 +1,4 @@
-/* Grundlayout */
+/* === Grundlayout === */
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -6,7 +6,7 @@ body {
   color: #333;
 }
 
-/* Header */
+/* === Header === */
 header {
   text-align: center;
   background: #004085;
@@ -19,14 +19,16 @@ header {
   margin-bottom: 10px;
 }
 
-/* Hauptbereich */
+/* === Hauptbereich === */
 main {
   padding: 30px;
-  max-width: 1200px;
+  width: 100%;
+  max-width: none;
   margin: auto;
+  box-sizing: border-box;
 }
 
-/* Introbereich auf Loginseite */
+/* === Introbereich (Login-Vorschaltseite) === */
 #intro {
   text-align: center;
   margin-bottom: 40px;
@@ -50,7 +52,7 @@ main {
   color: #444;
 }
 
-/* Auth-Formulare */
+/* === Authentifizierungsformulare === */
 .auth-forms {
   display: flex;
   justify-content: center;
@@ -63,8 +65,10 @@ main {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   padding: 25px;
-  min-width: 280px;
+  margin-bottom: 30px;
+  width: 100%;
   max-width: 400px;
+  box-sizing: border-box;
 }
 
 input, select {
@@ -85,6 +89,7 @@ button {
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
+  transition: background 0.3s ease;
 }
 
 button:hover {
@@ -101,24 +106,39 @@ button:hover {
   background-color: #bb2d3b;
 }
 
-/* Diagramm-Bereich */
+/* === Upload- und Auswertungsbereich === */
+#app-section .card {
+  max-width: none;
+}
+
+/* === Diagramm-Bereich === */
 .charts {
   display: flex;
+  justify-content: space-around;
+  gap: 40px;
   flex-wrap: wrap;
-  gap: 30px;
-  justify-content: center;
   margin-top: 20px;
 }
 
 canvas {
+  flex: 1 1 45%;
+  min-width: 300px;
+  max-width: 600px;
   background: #fff;
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* Responsive */
-@media (max-width: 600px) {
+/* === Upload-Status === */
+#upload-status {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #444;
+}
+
+/* === Responsive Verhalten === */
+@media (max-width: 768px) {
   .auth-forms {
     flex-direction: column;
     align-items: center;
@@ -129,5 +149,10 @@ canvas {
     display: block;
     width: 100%;
     margin-bottom: 20px;
+  }
+
+  .charts {
+    flex-direction: column;
+    align-items: center;
   }
 }
