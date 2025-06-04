@@ -1,6 +1,6 @@
 // Supabase-Konfiguration
 const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co';
-const supabaseKey = '...'; // deinen anon Key einsetzen
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI'; // deinen anon Key einsetzen
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // UI-Elemente
