@@ -2,7 +2,7 @@
 
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co'
-const supabaseKey = process.env.SUPABASE_KEY
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dndnaGNoeHprbHpjZ2pxb2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzY5NjcsImV4cCI6MjA2NDYxMjk2N30.d_LPinE6_-hQRQX2y-IjSdzZ3oA9nK9pDp0dSlh5-YI'
 
 // === LOGIN mit E-Mail-Bestätigung ===
 document.getElementById('login-form').addEventListener('submit', async (e) => {
