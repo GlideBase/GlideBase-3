@@ -59,7 +59,7 @@ document.getElementById("logout-btn").addEventListener("click", async () => {
   checkSession();
 });
 
-// HELPER: Excel-Datum umwandeln (Seriennummer → YYYY-MM-DD)
+// HELPER: Excel-Datum (Seriennummer) → ISO
 function excelDateToISO(excelValue) {
   if (typeof excelValue === 'number') {
     const date = new Date((excelValue - 25569) * 86400 * 1000);
@@ -71,7 +71,7 @@ function excelDateToISO(excelValue) {
   }
 }
 
-// HELPER: Excel-Zeit umwandeln (z. B. 0.5 → 12:00:00)
+// HELPER: Excel-Zeit (z. B. 0.5 → 12:00:00)
 function excelTimeToString(value) {
   if (typeof value === "number") {
     const seconds = Math.floor(value * 86400);
@@ -85,8 +85,7 @@ function excelTimeToString(value) {
     return null;
   }
 }
-
-// EXCEL-UPLOAD mit Filter & Feedback
+// EXCEL-DATEI HOCHLADEN
 document.getElementById("upload-btn").addEventListener("click", async () => {
   const file = document.getElementById("excel-file").files[0];
   if (!file) return alert("❌ Bitte eine Datei auswählen.");
@@ -133,21 +132,83 @@ document.getElementById("upload-btn").addEventListener("click", async () => {
   reader.readAsBinaryString(file);
 });
 
-// AUSWERTUNG
+// AUSWERTUNG & DIAGRAMME
 document.getElementById("load-analysis").addEventListener("click", async () => {
   const yearStart = `${new Date().getFullYear()}-01-01`;
   const user = supabase.auth.user();
   if (!user) return alert("Nicht eingeloggt.");
 
-  const { data: countData } = await supabase
-    .rpc('meistgeflogenes_flugzeug', { ab_datum: yearStart });
+  const { data: countData } = await supabase.rpc('meistgeflogenes_flugzeug', { ab_datum: yearStart });
+  const { data: zeitData } = await supabase.rpc('flugzeug_mit_gesamtzeit', { ab_datum: yearStart });
+
+  document.getElementById("most-flown").textContent = countData?.[0]?.flugzeug || "Keine Daten";
+  document.getElementById("longest-time").textContent = zeitData?.[0]?.flugzeug || "Keine Daten";
+
+  await ladeUndZeigeDiagramme();
+});
+
+async function ladeUndZeigeDiagramme() {
+  const yearStart = `${new Date().getFullYear()}-01-01`;
+  const user = supabase.auth.user();
+  if (!user) return;
+
+  const { data: haeufigkeitData } = await supabase
+    .from("fluege")
+    .select("flugzeug, count:flugzeug", { count: "exact", head: false })
+    .gte("datum", yearStart)
+    .group("flugzeug");
 
   const { data: zeitData } = await supabase
-    .rpc('flugzeug_mit_gesamtzeit', { ab_datum: yearStart });
+    .from("fluege")
+    .select("flugzeug, sum:flugzeit", { head: false })
+    .gte("datum", yearStart)
+    .group("flugzeug");
 
-  document.getElementById("most-flown").textContent =
-    countData?.[0]?.flugzeug || "Keine Daten";
+  zeigePieChart(haeufigkeitData);
+  zeigeBarChart(zeitData);
+}
 
-  document.getElementById("longest-time").textContent =
-    zeitData?.[0]?.flugzeug || "Keine Daten";
-});
+function zeigePieChart(data) {
+  const ctx = document.getElementById("flughaeufigkeit-chart").getContext("2d");
+  new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: data.map(e => e.flugzeug),
+      datasets: [{
+        label: "Anzahl Flüge",
+        data: data.map(e => e.count),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: "Flüge je Flugzeug (Anzahl)" }
+      }
+    }
+  });
+}
+
+function zeigeBarChart(data) {
+  const ctx = document.getElementById("flugzeit-chart").getContext("2d");
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: data.map(e => e.flugzeug),
+      datasets: [{
+        label: "Gesamtflugzeit (h)",
+        data: data.map(e => e.sum),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: "Flugzeit je Flugzeug (Summe)" }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
