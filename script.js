@@ -4,7 +4,8 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co'
 const supabaseKey = process.env.SUPABASE_KEY
 const supabase = createClient(supabaseUrl, supabaseKey)
-// === LOGIN ===
+
+// === LOGIN mit E-Mail-Bestätigung ===
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -22,18 +23,24 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
       return;
     }
 
-    alert("✅ Willkommen zurück, " + data.user.email);
+    const user = data.user;
 
-    // Optional: Weiterleitung nach Login
-    // window.location.href = "dashboard.html";
+    if (!user.email_confirmed_at) {
+      alert("⚠️ Deine E-Mail ist noch nicht bestätigt. Bitte überprüfe dein Postfach.");
+      await supabase.auth.signOut(); // Sicherheitshalber ausloggen
+      return;
+    }
+
+    alert("✅ Willkommen, " + user.email);
+    window.location.href = "dashboard.html";
 
   } catch (err) {
-    alert("Ein technischer Fehler ist aufgetreten.");
     console.error(err);
+    alert("Ein technischer Fehler ist aufgetreten.");
   }
 });
 
-// === REGISTRIERUNG ===
+// === REGISTRIERUNG mit Hinweis zur Bestätigung ===
 document.getElementById('signup-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -51,18 +58,18 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
       return;
     }
 
-    alert("✅ Registrierung erfolgreich! Bitte bestätige deine E-Mail.");
+    alert("✅ Registrierung erfolgreich! Bitte bestätige deine E-Mail, bevor du dich einloggst.");
     
-    // Falls kein Trigger eingerichtet ist, kannst du hier manuell ein Profil erstellen (optional):
+    // Optional: automatisch Profil anlegen, falls Trigger NICHT aktiv ist
     /*
-    const { user } = data;
-    await supabase.from('profiles').insert([
-      { id: user.id, email: user.email }
-    ]);
+    const user = data.user;
+    if (user) {
+      await supabase.from('profiles').insert([{ id: user.id, email: user.email }]);
+    }
     */
 
   } catch (err) {
-    alert("Ein technischer Fehler ist aufgetreten.");
     console.error(err);
+    alert("Ein technischer Fehler ist aufgetreten.");
   }
 });
