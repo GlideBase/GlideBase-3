@@ -2,66 +2,69 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GlideBase</title>
-
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GlideBase – Flugauswertung</title>
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6/dist/umd/supabase.min.js"></script>
 </head>
 <body>
   <header>
+    <img src="LOGO_GlideBase.PNG" alt="Logo" class="logo-header">
     <h1>GlideBase</h1>
-    <p>Die zentrale Plattform für Flugdaten</p>
   </header>
 
-  <main class="container">
+  <main>
     <section id="auth-section">
-      <div class="box">
-        <h2>Login</h2>
-        <form id="login-form">
-          <input type="email" id="login-email" placeholder="E-Mail-Adresse" required />
-          <input type="password" id="login-password" placeholder="Passwort" required />
-          <button type="submit">Einloggen</button>
-        </form>
+      <div id="intro">
+        <img src="LOGO_GlideBase.PNG" alt="GlideBase Logo Groß" class="logo-large">
+        <h2>Willkommen bei GlideBase</h2>
+        <p>Dein digitales Flugbuch für präzise Flugzeiterfassung, Auswertung und Transparenz im Flugbetrieb.</p>
       </div>
 
-      <div class="box">
-        <h2>Registrieren</h2>
-        <form id="signup-form">
-          <input type="email" id="signup-email" placeholder="E-Mail-Adresse" required />
+      <div class="auth-forms">
+        <form id="login-form" class="card">
+          <h3>Login</h3>
+          <input type="email" id="login-email" placeholder="E-Mail" required />
+          <input type="password" id="login-password" placeholder="Passwort" required />
+          <button type="submit">Login</button>
+        </form>
+
+        <form id="signup-form" class="card">
+          <h3>Registrieren</h3>
+          <input type="email" id="signup-email" placeholder="E-Mail" required />
           <input type="password" id="signup-password" placeholder="Passwort" required />
           <button type="submit">Registrieren</button>
         </form>
-        <p class="small-hint">Bitte bestätige deine E-Mail nach der Registrierung.</p>
       </div>
     </section>
 
-    <section id="app-section" style="display: none">
-      <button id="logout-btn">Abmelden</button>
+    <section id="app-section" style="display:none">
+      <button id="logout-btn" class="logout-btn">Logout</button>
 
-      <h2>Excel-Datei hochladen (.xlsx)</h2>
-      <input type="file" id="excel-file" accept=".xlsx" />
-      <button id="upload-btn">Upload starten</button>
-      <div id="upload-status"></div>
+      <div class="card">
+        <h2>Excel-Datei hochladen</h2>
+        <input type="file" id="excel-file" accept=".xlsx"/>
+        <button id="upload-btn">Hochladen</button>
+        <p id="upload-status"></p>
+      </div>
 
-      <h2>Auswertung (dieses Jahr)</h2>
-      <button id="load-analysis">Aktualisieren</button>
-      <p><strong>Meistgeflogenes Flugzeug:</strong> <span id="most-flown"></span></p>
-      <p><strong>Längste Flugzeit:</strong> <span id="longest-time"></span></p>
+      <div class="card">
+        <h2>Flugauswertung</h2>
+        <label for="jahr-auswahl">Jahr:</label>
+        <select id="jahr-auswahl"></select>
 
-      <h2>Diagramme</h2>
-      <canvas id="flughaeufigkeit-chart" width="400" height="200"></canvas>
-      <canvas id="flugzeit-chart" width="400" height="200"></canvas>
+        <p><strong>Meistgeflogenes Flugzeug:</strong> <span id="most-flown">–</span></p>
+        <p><strong>Längste Flugzeit:</strong> <span id="longest-time">–</span></p>
+
+        <div class="charts">
+          <canvas id="flughaeufigkeit-chart" width="300" height="200"></canvas>
+          <canvas id="flugzeit-chart" width="300" height="200"></canvas>
+        </div>
+      </div>
     </section>
   </main>
-
-  <footer>
-    &copy; 2025 GlideBase – Alles in einer Datei 💡
-  </footer>
 
   <script src="script.js"></script>
 </body>
