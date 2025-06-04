@@ -224,7 +224,7 @@ function zeigePieChart(data) {
       }]
     },
     options: {
-      responsive: true,
+      responsive: false,
       plugins: {
         title: { display: true, text: "Flüge je Flugzeug (Anzahl)" }
       }
