@@ -106,9 +106,10 @@ function excelTimeToString(value) {
     return null;
   }
 }
+
 // Excel-Hochladen mit Duplikatprüfung
-document.getElementById("upload-btn").addEventListener("click", async () => {
-  const file = document.getElementById("excel-file").files[0];
+document.getElementById("excel-upload").addEventListener("change", async (event) => {
+  const file = event.target.files[0];
   if (!file) {
     alert("❌ Bitte eine Datei auswählen.");
     return;
@@ -233,7 +234,7 @@ function zeigePieChart(data) {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       plugins: {
         title: { display: true, text: "Flüge je Flugzeug (Anzahl)" }
       }
@@ -257,7 +258,7 @@ function zeigeBarChart(data) {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       plugins: {
         title: { display: true, text: "Flugzeit je Flugzeug (Summe)" }
       },
