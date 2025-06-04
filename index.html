@@ -5,14 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GlideBase – Flugzeiten Auswertung</title>
 
-  <!-- Style -->
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Chart.js -->
+  <!-- 📊 Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Supabase JS v1 -->
+  <!-- 🔄 Supabase JS v1 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6/dist/umd/supabase.min.js"></script>
+
+  <!-- 📄 SheetJS (Excel) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
   <header>
@@ -21,14 +24,14 @@
   </header>
 
   <main>
-    <!-- Intro-Bereich -->
+    <!-- Intro -->
     <section id="intro">
       <img src="LOGO_GlideBase.PNG" alt="GlideBase Logo Groß" class="logo-large">
       <h2>Willkommen bei GlideBase</h2>
       <p>Dein digitales Flugbuch für präzise Flugzeiterfassung, Auswertung und Transparenz im Flugbetrieb.</p>
     </section>
 
-    <!-- Auth-Bereich -->
+    <!-- Auth -->
     <section id="auth-section" class="auth-forms">
       <form id="login-form" class="card">
         <h3>Login</h3>
@@ -45,7 +48,7 @@
       </form>
     </section>
 
-    <!-- App-Bereich -->
+    <!-- App -->
     <section id="app-section" style="display: none;">
       <button class="logout-btn" id="logout-btn">Abmelden</button>
 
@@ -72,7 +75,7 @@
     </section>
   </main>
 
-  <!-- Haupt-Script -->
+  <!-- 🚀 Hauptscript am Ende laden -->
   <script src="script.js"></script>
 </body>
 </html>
