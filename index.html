@@ -6,7 +6,7 @@
   <title>GlideBase – Flugzeiten Auswertung</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Supabase v1 SDK -->
+  <!-- Supabase v1 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6/dist/umd/supabase.min.js"></script>
 </head>
 <body>
@@ -47,6 +47,7 @@
       <div class="card">
         <h3>Flugzeiten hochladen (.xlsx)</h3>
         <input type="file" id="excel-upload" accept=".xlsx" />
+        <button id="upload-btn">Hochladen</button>
         <p id="upload-status"></p>
       </div>
 
