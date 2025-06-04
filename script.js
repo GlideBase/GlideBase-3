@@ -1,8 +1,8 @@
 // === Supabase-Konfiguration ===
-const SUPABASE_URL = 'https://DEIN-PROJEKT.supabase.co'; // z. B. https://xyzcompany.supabase.co
-const SUPABASE_ANON_KEY = 'DEIN_ANON_KEY'; // z. B. public-anonymous-key
-
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+import { createClient } from '@supabase/supabase-js'
+const supabaseUrl = 'https://tzvwghchxzklzcgjqoex.supabase.co'
+const supabaseKey = process.env.SUPABASE_KEY
+const supabase = createClient(supabaseUrl, supabaseKey) 
 
 // === LOGIN ===
 document.getElementById('login-form').addEventListener('submit', async (e) => {
