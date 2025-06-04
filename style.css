@@ -1,86 +1,73 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   margin: 0;
-  padding: 20px;
-  background: #002244; /* Dunkelblau */
-  color: #f0f0f0;
+  padding: 0;
+  background: linear-gradient(to bottom right, #e6f0ff, #ffffff);
+  color: #1e3a5f;
 }
 
-h2 {
-  color: #ffffff;
-}
-
-form {
-  margin-bottom: 20px;
-  padding: 20px;
-  background: #ffffff10; /* leicht transparentes Weiß */
-  border: 1px solid #ffffff33;
-  border-radius: 8px;
-  max-width: 400px;
-  backdrop-filter: blur(4px);
-}
-
-input[type="email"],
-input[type="password"],
-input[type="file"],
-select {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  border: none;
-  border-radius: 4px;
-  background: #ffffffdd;
-  color: #000;
-  box-sizing: border-box;
-}
-
-button {
-  background-color: #007bff;
+header {
+  background-color: #1e3a5f;
   color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  padding: 20px;
+  text-align: center;
 }
 
-button:hover {
-  background-color: #0056b3;
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
 }
 
-#auth-section {
+.auth-section {
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
   flex-wrap: wrap;
   gap: 20px;
 }
 
-#app-section {
-  background: #ffffff08;
+.box {
+  flex: 1;
+  min-width: 280px;
+  background-color: #f4f8ff;
   padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #ffffff22;
-  max-width: 900px;
-  margin: 0 auto;
-  backdrop-filter: blur(2px);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(30, 58, 95, 0.1);
 }
 
-#upload-status {
-  margin-top: 10px;
+input[type="email"],
+input[type="password"],
+input[type="file"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #1e3a5f;
+  color: white;
+  border: none;
+  border-radius: 5px;
   font-weight: bold;
-  color: #ffcc00;
+  cursor: pointer;
 }
 
-canvas {
-  display: block;
-  margin: 20px auto;
-  max-width: 100%;
-  width: 300px;
-  height: auto;
-  background: #fff;
-  border-radius: 8px;
-  padding: 10px;
+h2 {
+  color: #1e3a5f;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #e6f0ff;
+  font-size: 0.9em;
+  margin-top: 40px;
+}
+
+.small-hint {
+  font-size: 0.9em;
+  color: #555;
 }
